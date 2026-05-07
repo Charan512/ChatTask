@@ -13,8 +13,8 @@ export function useTheme() {
   const [isDark, setIsDark] = useState(() => {
     const stored = localStorage.getItem(THEME_KEY);
     if (stored) return stored === 'dark';
-    // Default: respect OS preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Default: light mode (override OS preference)
+    return false;
   });
 
   useEffect(() => {
