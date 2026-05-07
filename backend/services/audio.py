@@ -24,12 +24,12 @@ _BHASHINI_PIPELINE_URL = (
     "https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
 )
 
-# Bhashini ULCA pipeline API authenticates via two headers:
-#   userID      — your profile user ID
-#   ulcaApiKey  — your ULCA API key
+# Bhashini Dhruva inference API authenticates via:
+#   userID        — your Bhashini profile user ID
+#   Authorization — your Bhashini API key
 _HEADERS = {
     "userID": BHASHINI_USER_ID,
-    "ulcaApiKey": BHASHINI_API_KEY,
+    "Authorization": BHASHINI_API_KEY,
     "Content-Type": "application/json",
 }
 
