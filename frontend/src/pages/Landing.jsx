@@ -30,6 +30,12 @@ export default function Landing() {
   const { isDark, toggleTheme } = useTheme();
 
   const handleLaunch = () => {
+    // Fire-and-forget health check to wake up Render server early
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      fetch(`${apiUrl}/health`).catch(() => {});
+    }
+
     getSessionId();
     navigate('/chat');
   };
