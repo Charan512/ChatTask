@@ -10,7 +10,7 @@
  */
 
 import { useState, useRef, useCallback } from 'react';
-import { getSupportedMimeType, blobToBase64 } from '../utils/audio';
+import { getSupportedMimeType, blobToBase64, unlockAudioContext } from '../utils/audio';
 
 /**
  * @typedef {Object} UseVoiceRecorderReturn
@@ -33,6 +33,8 @@ export function useVoiceRecorder(onComplete) {
   const chunksRef = useRef([]);
 
   const startRecording = useCallback(async () => {
+    // Unlock AudioContext during this user gesture so TTS playback works later
+    unlockAudioContext();
     setError(null);
     chunksRef.current = [];
 

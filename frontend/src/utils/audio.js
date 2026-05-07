@@ -42,19 +42,58 @@ export function blobToBase64(blob) {
   });
 }
 
+// Module-level AudioContext — created once, reused for all playback.
+// Must be created/resumed inside a user-gesture handler to stay unlocked.
+let _audioCtx = null;
+
 /**
- * Play a Base64-encoded audio string in the browser.
+ * Call this once inside a user-gesture handler (e.g. mic button click)
+ * to unlock the AudioContext for subsequent async playback calls.
+ */
+export function unlockAudioContext() {
+  if (!_audioCtx) {
+    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (_audioCtx.state === 'suspended') {
+    _audioCtx.resume();
+  }
+}
+
+/**
+ * Play a Base64-encoded audio string in the browser using AudioContext.
+ * AudioContext is not subject to the same autoplay restrictions as Audio elements.
  *
  * @param {string} base64Audio - The audio data from the backend TTS response.
  * @param {string} [mimeType='audio/wav'] - MIME type of the audio.
  * @returns {Promise<void>} Resolves when playback finishes.
  */
 export function playBase64Audio(base64Audio, mimeType = 'audio/wav') {
-  return new Promise((resolve, reject) => {
-    const audioSrc = `data:${mimeType};base64,${base64Audio}`;
-    const audio = new Audio(audioSrc);
-    audio.onended = resolve;
-    audio.onerror = reject;
-    audio.play().catch(reject);
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Ensure context exists (fallback if unlockAudioContext wasn't called)
+      if (!_audioCtx) {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (_audioCtx.state === 'suspended') {
+        await _audioCtx.resume();
+      }
+
+      // Decode base64 to binary
+      const binary = atob(base64Audio);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+
+      // Decode the audio buffer and play it
+      const audioBuffer = await _audioCtx.decodeAudioData(bytes.buffer);
+      const source = _audioCtx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(_audioCtx.destination);
+      source.onended = resolve;
+      source.start(0);
+    } catch (err) {
+      reject(err);
+    }
   });
 }
