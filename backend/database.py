@@ -80,12 +80,12 @@ async def get_or_create_session(client: Client, session_id: str) -> dict:
         client.table("sessions")
         .select("*")
         .eq("id", session_id)
-        .maybe_single()
+        .limit(1)
         .execute()
     )
 
     if result.data:
-        return result.data
+        return result.data[0]
 
     # Session doesn't exist — create it
     new_session = {
