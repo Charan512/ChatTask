@@ -58,7 +58,7 @@ class Message(SQLModel, table=True):
     sender: str = Field(description="Enum: 'user' | 'bot'")
     transcript: str
     language_detected: Optional[str] = Field(default="hi-te-mix")
-    metadata: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    meta_data: Optional[dict] = Field(default=None, sa_column=Column("metadata", JSON))
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
