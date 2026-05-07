@@ -26,10 +26,9 @@ def _require(key: str) -> str:
 # Groq LLM
 GROQ_API_KEY: str           = _require("GROQ_API_KEY")
 
-# Bhashini Speech Pipeline — all three fields are required by the ULCA API
-BHASHINI_API_KEY: str       = _require("BHASHINI_API_KEY")
+# Bhashini Speech Pipeline
+BHASHINI_API_KEY: str       = _require("BHASHINI_API_KEY")   # Used as both Authorization header and pipelineId
 BHASHINI_USER_ID: str       = _require("BHASHINI_USER_ID")
-BHASHINI_PIPELINE_ID: str   = _require("BHASHINI_PIPELINE_ID")
 
 # Supabase — REST client uses URL + KEY; connection pooler URL used for direct DB
 SUPABASE_URL: str           = _require("SUPABASE_URL")

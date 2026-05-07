@@ -17,7 +17,7 @@ import base64
 
 import httpx
 
-from config import BHASHINI_API_KEY, BHASHINI_USER_ID, BHASHINI_PIPELINE_ID
+from config import BHASHINI_API_KEY, BHASHINI_USER_ID
 
 # ── Bhashini constants ───────────────────────────────────────────────────────
 _BHASHINI_PIPELINE_URL = (
@@ -69,7 +69,7 @@ async def speech_to_text(audio_base64: str, audio_format: str = "webm") -> str:
     """
     payload = {
         "pipelineRequestConfig": {
-            "pipelineId": BHASHINI_PIPELINE_ID,
+            "pipelineId": BHASHINI_API_KEY,
         },
         "pipelineTasks": [
             {
@@ -127,7 +127,7 @@ async def text_to_speech(text: str) -> str:
     """
     payload = {
         "pipelineRequestConfig": {
-            "pipelineId": BHASHINI_PIPELINE_ID,
+            "pipelineId": BHASHINI_API_KEY,
         },
         "pipelineTasks": [
             {
