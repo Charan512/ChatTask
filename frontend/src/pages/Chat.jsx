@@ -80,60 +80,6 @@ export default function Chat() {
     fetchHistory();
   }, [sessionId]);
 
-  // ── Text submit handler ──────────────────────────────────────────────────
-  const handleTextSubmit = useCallback(async (e) => {
-    e?.preventDefault();
-    if (!inputText.trim() || isProcessing || isRecording) return;
-
-    const textToSend = inputText.trim();
-    setInputText('');
-    setApiError(null);
-    setIsProcessing(true);
-
-    const tempUserMsg = {
-      sender: 'user',
-      transcript: textToSend,
-      created_at: new Date().toISOString(),
-      _temp: true,
-    };
-    setMessages((prev) => [...prev, tempUserMsg]);
-
-    try {
-      const res = await fetch(`${API_BASE}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: sessionId,
-          text: textToSend,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail ?? `Server error: ${res.status}`);
-      }
-
-      const { text } = await res.json();
-
-      const histRes = await fetch(`${API_BASE}/api/history/${sessionId}`);
-      if (histRes.ok) {
-        const histData = await histRes.json();
-        setMessages(histData.messages ?? []);
-        setHistory(histData.messages ?? []);
-      } else {
-        setMessages((prev) => [
-          ...prev.filter((m) => !m._temp),
-          { sender: 'bot', transcript: text, created_at: new Date().toISOString() },
-        ]);
-      }
-    } catch (err) {
-      setApiError(err.message);
-      setMessages((prev) => prev.filter((m) => !m._temp));
-    } finally {
-      setIsProcessing(false);
-    }
-  }, [inputText, isProcessing, isRecording, sessionId]);
-
   // ── Audio complete handler — called by useVoiceRecorder ──────────────────
   const handleAudioReady = useCallback(async (audioBase64) => {
     setApiError(null);
@@ -209,6 +155,60 @@ export default function Chat() {
   // ── Voice recorder ────────────────────────────────────────────────────────
   const { isRecording, error: micError, startRecording, stopRecording } =
     useVoiceRecorder(handleAudioReady);
+
+  // ── Text submit handler ──────────────────────────────────────────────────
+  const handleTextSubmit = useCallback(async (e) => {
+    e?.preventDefault();
+    if (!inputText.trim() || isProcessing || isRecording) return;
+
+    const textToSend = inputText.trim();
+    setInputText('');
+    setApiError(null);
+    setIsProcessing(true);
+
+    const tempUserMsg = {
+      sender: 'user',
+      transcript: textToSend,
+      created_at: new Date().toISOString(),
+      _temp: true,
+    };
+    setMessages((prev) => [...prev, tempUserMsg]);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          text: textToSend,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail ?? `Server error: ${res.status}`);
+      }
+
+      const { text } = await res.json();
+
+      const histRes = await fetch(`${API_BASE}/api/history/${sessionId}`);
+      if (histRes.ok) {
+        const histData = await histRes.json();
+        setMessages(histData.messages ?? []);
+        setHistory(histData.messages ?? []);
+      } else {
+        setMessages((prev) => [
+          ...prev.filter((m) => !m._temp),
+          { sender: 'bot', transcript: text, created_at: new Date().toISOString() },
+        ]);
+      }
+    } catch (err) {
+      setApiError(err.message);
+      setMessages((prev) => prev.filter((m) => !m._temp));
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [inputText, isProcessing, isRecording, sessionId]);
 
   // ── New conversation ──────────────────────────────────────────────────────
   const handleNewConversation = () => {
