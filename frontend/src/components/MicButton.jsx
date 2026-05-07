@@ -75,7 +75,7 @@ export default function MicButton({ isRecording, isProcessing, isDark, onStart, 
     ? 'opacity-50 cursor-not-allowed bg-slate-400 dark:bg-slate-600'
     : isRecording
     ? isDark
-      ? 'bg-brand-purple text-white animate-pulse-purple focus-visible:ring-brand-purple/50'
+      ? 'bg-brand-purple text-white animate-pulse-rgbp focus-visible:ring-brand-purple/50'
       : 'bg-brand-red text-white animate-pulse-rgby focus-visible:ring-brand-red/40'
     : isDark
     ? 'bg-brand-purple/80 text-white hover:bg-brand-purple hover:scale-105 focus-visible:ring-brand-purple/50'

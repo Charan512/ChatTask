@@ -54,10 +54,12 @@ export default {
           '50%':       { boxShadow: '0 0 0 20px rgba(34,197,94,0.3)' },
           '75%':       { boxShadow: '0 0 0 12px rgba(59,130,246,0.4)' },
         },
-        // Mic recording pulse — dark mode (Purple)
-        'pulse-purple': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(168,85,247,0.7)' },
-          '50%':       { boxShadow: '0 0 0 22px rgba(168,85,247,0)' },
+        // Mic recording pulse — dark mode (RGB-Purple)
+        'pulse-rgbp': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(239,68,68,0.6)' },    // Red
+          '25%':       { boxShadow: '0 0 0 12px rgba(34,197,94,0.4)' },   // Green
+          '50%':       { boxShadow: '0 0 0 20px rgba(59,130,246,0.3)' },  // Blue
+          '75%':       { boxShadow: '0 0 0 12px rgba(168,85,247,0.4)' },  // Purple
         },
         // Subtle fade-in-up for page elements
         'fade-up': {
@@ -77,7 +79,7 @@ export default {
       },
       animation: {
         'pulse-rgby':   'pulse-rgby 1.5s ease-in-out infinite',
-        'pulse-purple': 'pulse-purple 1.5s ease-in-out infinite',
+        'pulse-rgbp':   'pulse-rgbp 1.5s ease-in-out infinite',
         'fade-up':      'fade-up 0.5s ease-out forwards',
         'bounce-dot-1': 'bounce-dot 1.2s ease-in-out 0s infinite',
         'bounce-dot-2': 'bounce-dot 1.2s ease-in-out 0.2s infinite',
