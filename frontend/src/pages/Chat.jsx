@@ -20,6 +20,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Headphones, PenLine, Loader2, AlertTriangle, Mic } from 'lucide-react';
 import { getSessionId, resetSessionId } from '../utils/session';
 import { playBase64Audio } from '../utils/audio';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
@@ -91,7 +92,7 @@ export default function Chat() {
     // Optimistically add user placeholder (transcript unknown until STT)
     const tempUserMsg = {
       sender: 'user',
-      transcript: '🎙️ Processing your voice…',
+      transcript: 'Processing your voice…',
       created_at: new Date().toISOString(),
       _temp: true,
     };
@@ -181,7 +182,10 @@ export default function Chat() {
           flex items-center gap-2 px-4 py-4 border-b
           ${isDark ? 'border-slate-800' : 'border-slate-100'}
         `}>
-          <span className="text-xl">🎧</span>
+          <Headphones
+            size={20}
+            className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}
+          />
           <span className="font-bold text-sm">VoiceBot</span>
         </div>
 
@@ -199,7 +203,7 @@ export default function Chat() {
               }
             `}
           >
-            <span>✏️</span>
+            <PenLine size={15} />
             New Conversation
           </button>
         </div>
@@ -250,7 +254,10 @@ export default function Chat() {
           ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}
         `}>
           <div className="flex items-center gap-2">
-            <span className="text-xl">🎧</span>
+            <Headphones
+              size={20}
+              className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}
+            />
             <span className="font-bold text-sm">VoiceBot</span>
           </div>
           <div className="flex items-center gap-2">
@@ -275,7 +282,7 @@ export default function Chat() {
               : 'bg-brand-yellow/10 border border-brand-yellow/30 text-amber-700'
             }
           `}>
-            <span className="animate-spin text-base">⚙️</span>
+            <Loader2 size={16} className="animate-spin" />
             <span>
               <strong>Waking up the server…</strong> Render free tier may take ~15s on first request.
             </span>
@@ -285,7 +292,7 @@ export default function Chat() {
         {/* ── API / Mic Error banner ─────────────────────────────────────── */}
         {(apiError || micError) && (
           <div className="mx-4 mt-3 flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm bg-brand-red/10 border border-brand-red/30 text-brand-red shrink-0">
-            <span>⚠️</span>
+            <AlertTriangle size={16} />
             <span>{apiError || micError}</span>
           </div>
         )}
@@ -298,7 +305,10 @@ export default function Chat() {
           {messages.length === 0 && !isProcessing ? (
             // Empty state
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
-              <span className="text-5xl">🎙️</span>
+              <Mic
+                size={48}
+                className={isDark ? 'text-slate-600' : 'text-slate-300'}
+              />
               <p className={`font-semibold text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                 Ready to listen
               </p>

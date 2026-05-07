@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import { Bot, User } from 'lucide-react';
 
 /**
  * @param {{
@@ -27,10 +28,10 @@ export default function MessageBubble({ sender, transcript, createdAt, isDark })
       {/* Bot avatar */}
       {!isUser && (
         <div className={`
-          flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm font-bold
+          flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-2
           ${isDark ? 'bg-brand-purple/30 text-brand-purple-light' : 'bg-brand-blue/10 text-brand-blue'}
         `}>
-          🤖
+          <Bot size={16} />
         </div>
       )}
 
@@ -56,10 +57,10 @@ export default function MessageBubble({ sender, transcript, createdAt, isDark })
       {/* User avatar */}
       {isUser && (
         <div className={`
-          flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ml-2 text-sm
+          flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ml-2
           ${isDark ? 'bg-brand-purple/30 text-brand-purple-light' : 'bg-brand-blue/10 text-brand-blue'}
         `}>
-          🧑
+          <User size={16} />
         </div>
       )}
     </div>
