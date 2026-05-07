@@ -20,7 +20,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Headphones, PenLine, Loader2, AlertTriangle, Mic, Send, Volume2 } from 'lucide-react';
+import { Headphones, PenLine, Loader2, AlertTriangle, Mic, Send, Volume2, Menu, X } from 'lucide-react';
 import { getSessionId, resetSessionId } from '../utils/session';
 import { playBase64Audio } from '../utils/audio';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
@@ -56,6 +56,7 @@ export default function Chat() {
   const [apiError, setApiError] = useState(null);
   const [inputText, setInputText] = useState('');
   const [pendingAudio, setPendingAudio] = useState(null); // { base64, mime } when autoplay blocked
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   const coldStartTimerRef = useRef(null);
@@ -218,6 +219,7 @@ export default function Chat() {
   // ── New conversation ──────────────────────────────────────────────────────
   const handleNewConversation = () => {
     resetSessionId();
+    setIsMobileSidebarOpen(false);
     navigate(0); // Reload to re-initialise with new session
   };
 
@@ -232,21 +234,39 @@ export default function Chat() {
       ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}
     `}>
 
+      {/* Mobile sidebar overlay */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
       <aside className={`
-        hidden sm:flex flex-col w-64 border-r shrink-0
+        fixed inset-y-0 left-0 z-50 w-64 flex flex-col border-r transition-transform duration-300 ease-in-out
+        sm:relative sm:translate-x-0 shrink-0
+        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}
       `}>
         {/* Logo */}
         <div className={`
-          flex items-center gap-2 px-4 py-4 border-b
+          flex items-center justify-between px-4 py-4 border-b
           ${isDark ? 'border-slate-800' : 'border-slate-100'}
         `}>
-          <Headphones
-            size={20}
-            className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}
-          />
-          <span className="font-bold text-sm">VoiceBot</span>
+          <div className="flex items-center gap-2">
+            <Headphones
+              size={20}
+              className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}
+            />
+            <span className="font-bold text-sm">VoiceBot</span>
+          </div>
+          <button 
+            className="sm:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          >
+            <X size={20} />
+          </button>
         </div>
 
         {/* New conversation button */}
@@ -313,12 +333,20 @@ export default function Chat() {
           sm:hidden flex items-center justify-between px-4 py-3 border-b shrink-0
           ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}
         `}>
-          <div className="flex items-center gap-2">
-            <Headphones
-              size={20}
-              className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}
-            />
-            <span className="font-bold text-sm">VoiceBot</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className={`p-1 -ml-1 rounded-md ${isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'}`}
+            >
+              <Menu size={20} />
+            </button>
+            <div className="flex items-center gap-2">
+              <Headphones
+                size={20}
+                className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}
+              />
+              <span className="font-bold text-sm">VoiceBot</span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button
