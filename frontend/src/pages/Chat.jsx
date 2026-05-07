@@ -20,7 +20,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Headphones, PenLine, Loader2, AlertTriangle, Mic } from 'lucide-react';
+import { Headphones, PenLine, Loader2, AlertTriangle, Mic, Send } from 'lucide-react';
 import { getSessionId, resetSessionId } from '../utils/session';
 import { playBase64Audio } from '../utils/audio';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
@@ -54,6 +54,7 @@ export default function Chat() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showColdStart, setShowColdStart] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [inputText, setInputText] = useState('');
 
   const messagesEndRef = useRef(null);
   const coldStartTimerRef = useRef(null);
@@ -78,6 +79,60 @@ export default function Chat() {
     }
     fetchHistory();
   }, [sessionId]);
+
+  // ── Text submit handler ──────────────────────────────────────────────────
+  const handleTextSubmit = useCallback(async (e) => {
+    e?.preventDefault();
+    if (!inputText.trim() || isProcessing || isRecording) return;
+
+    const textToSend = inputText.trim();
+    setInputText('');
+    setApiError(null);
+    setIsProcessing(true);
+
+    const tempUserMsg = {
+      sender: 'user',
+      transcript: textToSend,
+      created_at: new Date().toISOString(),
+      _temp: true,
+    };
+    setMessages((prev) => [...prev, tempUserMsg]);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          text: textToSend,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail ?? `Server error: ${res.status}`);
+      }
+
+      const { text } = await res.json();
+
+      const histRes = await fetch(`${API_BASE}/api/history/${sessionId}`);
+      if (histRes.ok) {
+        const histData = await histRes.json();
+        setMessages(histData.messages ?? []);
+        setHistory(histData.messages ?? []);
+      } else {
+        setMessages((prev) => [
+          ...prev.filter((m) => !m._temp),
+          { sender: 'bot', transcript: text, created_at: new Date().toISOString() },
+        ]);
+      }
+    } catch (err) {
+      setApiError(err.message);
+      setMessages((prev) => prev.filter((m) => !m._temp));
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [inputText, isProcessing, isRecording, sessionId]);
 
   // ── Audio complete handler — called by useVoiceRecorder ──────────────────
   const handleAudioReady = useCallback(async (audioBase64) => {
@@ -334,18 +389,56 @@ export default function Chat() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* ── Voice Dock ────────────────────────────────────────────────── */}
+        {/* ── Input Dock ────────────────────────────────────────────────── */}
         <div className={`
-          shrink-0 flex flex-col items-center py-5 px-4 border-t
+          shrink-0 flex items-center gap-3 py-4 px-4 border-t
           ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-100'}
         `}>
-          <MicButton
-            isRecording={isRecording}
-            isProcessing={isProcessing}
-            isDark={isDark}
-            onStart={startRecording}
-            onStop={stopRecording}
-          />
+          <form 
+            onSubmit={handleTextSubmit}
+            className={`
+              flex-1 flex items-center gap-2 px-4 py-2.5 rounded-full border
+              transition-colors
+              ${isDark 
+                ? 'bg-slate-900 border-slate-700 focus-within:border-brand-purple-light' 
+                : 'bg-white border-slate-200 focus-within:border-brand-blue'}
+            `}
+          >
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Type a message..."
+              disabled={isProcessing || isRecording}
+              className={`
+                flex-1 bg-transparent border-none outline-none text-sm
+                ${isDark ? 'text-white placeholder-slate-500' : 'text-slate-900 placeholder-slate-400'}
+              `}
+            />
+            <button
+              type="submit"
+              disabled={!inputText.trim() || isProcessing || isRecording}
+              className={`
+                p-1.5 rounded-full transition-colors
+                ${inputText.trim() && !isProcessing && !isRecording
+                  ? isDark ? 'text-brand-purple-light hover:bg-brand-purple/20' : 'text-brand-blue hover:bg-brand-blue/10'
+                  : 'text-slate-400 opacity-50 cursor-not-allowed'
+                }
+              `}
+            >
+              <Send size={18} />
+            </button>
+          </form>
+
+          <div className="shrink-0">
+            <MicButton
+              isRecording={isRecording}
+              isProcessing={isProcessing}
+              isDark={isDark}
+              onStart={startRecording}
+              onStop={stopRecording}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -45,6 +45,16 @@ class HistoryResponse(BaseModel):
     messages: list[dict[str, Any]]
 
 
+class ChatRequest(BaseModel):
+    session_id: str = Field(..., description="Client-generated UUID for the conversation session.")
+    text: str = Field(..., description="User's text input.")
+
+
+class ChatResponse(BaseModel):
+    text: str = Field(..., description="Bot's text reply.")
+    session_id: str = Field(..., description="Echo of the session_id for client confirmation.")
+
+
 # ── Routes ───────────────────────────────────────────────────────────────────
 
 @router.post("/speak", response_model=SpeakResponse)
@@ -129,6 +139,64 @@ async def speak(request: SpeakRequest) -> SpeakResponse:
     # ── Step 7: Return response ──────────────────────────────────────────────
     return SpeakResponse(
         audio=audio_base64,
+        text=bot_text,
+        session_id=request.session_id,
+    )
+
+
+@router.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest) -> ChatResponse:
+    """
+    Text-only pipeline endpoint.
+    """
+    pipeline_start = time.monotonic()
+    client = get_supabase_client()
+
+    # ── Step 1: Get or create session
+    try:
+        await get_or_create_session(client, request.session_id)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Session error: {exc}")
+
+    # ── Step 2: Fetch history
+    try:
+        history = await fetch_session_history(client, request.session_id, limit=20)
+    except Exception:
+        history = []
+
+    # ── Step 3: LLM Response
+    try:
+        llm_start = time.monotonic()
+        bot_text = get_llm_response(request.text, history)
+        llm_latency_ms = round((time.monotonic() - llm_start) * 1000)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+    total_latency_ms = round((time.monotonic() - pipeline_start) * 1000)
+
+    # ── Step 4: Persist to Supabase
+    try:
+        await save_message(
+            client,
+            session_id=request.session_id,
+            sender="user",
+            transcript=request.text,
+            metadata={"is_text_input": True},
+        )
+        await save_message(
+            client,
+            session_id=request.session_id,
+            sender="bot",
+            transcript=bot_text,
+            metadata={
+                "llm_latency_ms": llm_latency_ms,
+                "total_latency_ms": total_latency_ms,
+            },
+        )
+    except Exception as exc:
+        print(f"[DB WARNING] Failed to persist messages: {exc}")
+
+    return ChatResponse(
         text=bot_text,
         session_id=request.session_id,
     )
