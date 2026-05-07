@@ -81,7 +81,7 @@ export default function Chat() {
   }, [sessionId]);
 
   // ── Audio complete handler — called by useVoiceRecorder ──────────────────
-  const handleAudioReady = useCallback(async (audioBase64) => {
+  const handleAudioReady = useCallback(async (audioBase64, mimeType) => {
     setApiError(null);
     setIsProcessing(true);
 
@@ -106,6 +106,7 @@ export default function Chat() {
         body: JSON.stringify({
           session_id: sessionId,
           audio_base64: audioBase64,
+          mime_type: mimeType ?? 'audio/webm',
         }),
       });
 

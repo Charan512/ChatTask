@@ -59,7 +59,7 @@ export function useVoiceRecorder(onComplete) {
 
         try {
           const base64 = await blobToBase64(blob);
-          onComplete(base64);
+          onComplete(base64, mimeType || 'audio/webm');
         } catch (convErr) {
           setError('Failed to process audio. Please try again.');
           console.error('[VoiceRecorder] Blob conversion error:', convErr);

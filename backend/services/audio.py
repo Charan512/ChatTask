@@ -53,12 +53,13 @@ def decode_base64_to_audio(b64_string: str) -> bytes:
 
 # ── Speech-to-Text ───────────────────────────────────────────────────────────
 
-async def speech_to_text(audio_base64: str) -> str:
+async def speech_to_text(audio_base64: str, audio_format: str = "webm") -> str:
     """
     Send Base64-encoded audio to Bhashini STT and return the transcript.
 
     Args:
         audio_base64: Microphone audio encoded as a Base64 string.
+        audio_format: The audio container format (e.g. 'webm', 'mp4', 'wav').
 
     Returns:
         Transcribed text string (Hindi / Telugu / code-mixed).
@@ -75,7 +76,7 @@ async def speech_to_text(audio_base64: str) -> str:
                 "taskType": "asr",
                 "config": {
                     "language": {"sourceLanguage": _STT_LANGUAGE},
-                    "audioFormat": "wav",
+                    "audioFormat": audio_format,
                     "samplingRate": 16000,
                 },
             }

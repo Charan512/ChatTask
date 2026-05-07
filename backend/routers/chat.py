@@ -32,6 +32,7 @@ router = APIRouter(prefix="/api", tags=["chat"])
 class SpeakRequest(BaseModel):
     session_id: str = Field(..., description="Client-generated UUID for the conversation session.")
     audio_base64: str = Field(..., description="Microphone audio encoded as a Base64 string.")
+    mime_type: str = Field(default="audio/webm", description="MIME type of the audio blob sent by the browser.")
 
 
 class SpeakResponse(BaseModel):
@@ -80,10 +81,21 @@ async def speak(request: SpeakRequest) -> SpeakResponse:
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Session error: {exc}")
 
+    # Derive Bhashini audioFormat from the browser's MIME type
+    _MIME_TO_FORMAT = {
+        "audio/webm": "webm",
+        "audio/webm;codecs=opus": "webm",
+        "audio/mp4": "mp4",
+        "audio/ogg": "ogg",
+        "audio/ogg;codecs=opus": "ogg",
+        "audio/wav": "wav",
+    }
+    audio_format = _MIME_TO_FORMAT.get(request.mime_type.lower().split(";")[0].strip(), "webm")
+
     # ── Step 2: Speech-to-Text ──────────────────────────────────────────────
     try:
         stt_start = time.monotonic()
-        user_text = await speech_to_text(request.audio_base64)
+        user_text = await speech_to_text(request.audio_base64, audio_format)
         stt_latency_ms = round((time.monotonic() - stt_start) * 1000)
     except RuntimeError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
