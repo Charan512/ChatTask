@@ -77,14 +77,14 @@ export default function Landing() {
         </div>
 
         {/* Headline */}
-        <h1 className={`text-5xl sm:text-6xl font-extrabold leading-tight mb-6 animate-fade-up ${isDark ? 'text-white' : 'text-slate-900'}`}>
+        <h1 className={`text-4xl sm:text-6xl font-extrabold leading-tight mb-4 sm:mb-6 animate-fade-up ${isDark ? 'text-white' : 'text-slate-900'}`}>
           Speak naturally in <br className="hidden sm:block" />
           <span className={isDark ? 'text-brand-blue' : 'text-brand-blue'}>Hindi</span>{' '}
           &amp;{' '}
           <span className={isDark ? 'text-brand-red' : 'text-brand-red'}>Telugu</span>
         </h1>
 
-        <p className={`text-lg sm:text-xl max-w-xl mb-10 leading-relaxed animate-fade-up ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+        <p className={`text-base sm:text-xl max-w-xl mb-8 sm:mb-10 leading-relaxed animate-fade-up px-4 sm:px-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           A real-time multilingual voice bot powered by Groq and Bhashini.
           Speak — and hear a response in seconds.
         </p>

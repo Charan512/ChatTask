@@ -421,14 +421,14 @@ export default function Chat() {
 
         {/* ── Input Dock ────────────────────────────────────────────────── */}
         <div className={`
-          shrink-0 flex items-center gap-3 py-4 px-4 border-t
+          shrink-0 flex items-center sm:items-start gap-2 sm:gap-4 py-3 sm:py-4 px-3 sm:px-4 border-t
           ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-100'}
         `}>
           <form 
             onSubmit={handleTextSubmit}
             className={`
-              flex-1 flex items-center gap-2 px-4 py-2.5 rounded-full border
-              transition-colors
+              flex-1 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border
+              transition-colors mt-0 sm:mt-4
               ${isDark 
                 ? 'bg-slate-900 border-slate-700 focus-within:border-brand-blue/70' 
                 : 'bg-white border-slate-200 focus-within:border-brand-blue'}

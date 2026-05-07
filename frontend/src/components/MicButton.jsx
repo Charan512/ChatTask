@@ -65,7 +65,7 @@ export default function MicButton({ isRecording, isProcessing, isDark, onStart, 
   // Base classes — always applied
   const base = `
     relative flex items-center justify-center
-    w-20 h-20 rounded-full cursor-pointer
+    w-14 h-14 sm:w-20 sm:h-20 rounded-full cursor-pointer
     transition-all duration-300 select-none
     focus:outline-none focus-visible:ring-4
   `;
@@ -94,8 +94,8 @@ export default function MicButton({ isRecording, isProcessing, isDark, onStart, 
         {isRecording ? <WaveformBars /> : <MicIcon isRecording={isRecording} />}
       </button>
 
-      {/* Status label */}
-      <p className={`text-xs font-medium tracking-wide ${
+      {/* Status label (hidden on mobile to save space) */}
+      <p className={`hidden sm:block text-xs font-medium tracking-wide ${
         isProcessing
           ? 'text-slate-400 dark:text-slate-500'
           : isRecording
