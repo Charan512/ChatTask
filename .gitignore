@@ -1,0 +1,140 @@
+# ================================================================
+# Monorepo .gitignore — Python (FastAPI) + React (Vite) + Supabase
+# ================================================================
+
+
+# ── Environment & Secrets ────────────────────────────────────────
+# NEVER commit real .env files — only commit .env.example
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.agents/
+
+# ── Python / Backend ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+wheels/
+
+# PyInstaller
+*.spec
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+.pyright/
+
+# Ruff / linters
+.ruff_cache/
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+*.ipynb
+
+# SQLite (dev database, if used locally)
+*.db
+*.sqlite3
+
+
+# ── Node / Frontend ──────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+
+# Vite build output
+frontend/dist/
+frontend/.vite/
+
+# npm / yarn / pnpm lockfiles generated locally
+# (keep package-lock.json or yarn.lock if you want reproducible CI)
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
+.pnpm-debug.log*
+
+# Storybook / other build tools
+storybook-static/
+
+
+# ── OS & Editor artifacts ─────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+!.vscode/extensions.json  # Allow sharing recommended extensions
+
+# JetBrains IDEs (PyCharm, WebStorm)
+.idea/
+*.iml
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.\#*
+
+
+# ── Deployment & Infrastructure ───────────────────────────────────
+# Vercel
+.vercel/
+
+# Render
+.render/
+
+# Docker
+*.log
+
+# Terraform / Pulumi (if added later)
+.terraform/
+*.tfstate
+*.tfstate.backup
+.pulumi/
+
+
+# ── Misc ──────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.orig
+.cache/
+tmp/
+temp/

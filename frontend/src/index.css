@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base resets ─────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', ui-sans-serif, system-ui;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-white text-slate-900 transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply bg-slate-900 text-slate-100;
+  }
+}
+
+/* ── Glassmorphism utility classes ───────────────────────────────────────── */
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-md border rounded-2xl;
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-card {
+    background: rgba(15, 23, 42, 0.55);
+    border-color: rgba(168, 85, 247, 0.18);
+    box-shadow: 0 4px 24px rgba(109, 40, 217, 0.15);
+  }
+
+  /* Scrollable message list — hide scrollbar but keep scroll */
+  .scroll-smooth-hide {
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scroll-smooth-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
