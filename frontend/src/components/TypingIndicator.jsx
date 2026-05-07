@@ -19,15 +19,15 @@ export default function TypingIndicator({ isDark }) {
       <div className="glass-card px-4 py-3 flex items-center gap-1.5">
         <span className={`
           inline-block w-2 h-2 rounded-full animate-bounce-dot-1
-          ${isDark ? 'bg-brand-purple-light' : 'bg-brand-blue'}
+          ${isDark ? 'bg-brand-red' : 'bg-brand-blue'}
         `} />
         <span className={`
           inline-block w-2 h-2 rounded-full animate-bounce-dot-2
-          ${isDark ? 'bg-brand-purple-light' : 'bg-brand-blue'}
+          ${isDark ? 'bg-brand-green' : 'bg-brand-blue'}
         `} />
         <span className={`
           inline-block w-2 h-2 rounded-full animate-bounce-dot-3
-          ${isDark ? 'bg-brand-purple-light' : 'bg-brand-blue'}
+          ${isDark ? 'bg-brand-blue' : 'bg-brand-blue'}
         `} />
       </div>
     </div>

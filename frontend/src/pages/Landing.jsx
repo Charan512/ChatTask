@@ -78,10 +78,10 @@ export default function Landing() {
 
         {/* Headline */}
         <h1 className={`text-5xl sm:text-6xl font-extrabold leading-tight mb-6 animate-fade-up ${isDark ? 'text-white' : 'text-slate-900'}`}>
-          Talk to AI in{' '}
-          <span className={isDark ? 'text-brand-purple-light' : 'text-brand-blue'}>Hindi</span>{' '}
+          Speak naturally in <br className="hidden sm:block" />
+          <span className={isDark ? 'text-brand-blue' : 'text-brand-blue'}>Hindi</span>{' '}
           &amp;{' '}
-          <span className={isDark ? 'text-brand-purple' : 'text-brand-red'}>Telugu</span>
+          <span className={isDark ? 'text-brand-red' : 'text-brand-red'}>Telugu</span>
         </h1>
 
         <p className={`text-lg sm:text-xl max-w-xl mb-10 leading-relaxed animate-fade-up ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>

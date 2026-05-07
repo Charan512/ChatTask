@@ -430,7 +430,7 @@ export default function Chat() {
               flex-1 flex items-center gap-2 px-4 py-2.5 rounded-full border
               transition-colors
               ${isDark 
-                ? 'bg-slate-900 border-slate-700 focus-within:border-brand-purple-light' 
+                ? 'bg-slate-900 border-slate-700 focus-within:border-brand-blue/70' 
                 : 'bg-white border-slate-200 focus-within:border-brand-blue'}
             `}
           >
@@ -449,10 +449,10 @@ export default function Chat() {
               type="submit"
               disabled={!inputText.trim() || isProcessing || isRecording}
               className={`
-                p-1.5 rounded-full transition-colors
+                p-2 rounded-full transition-colors shrink-0
                 ${inputText.trim() && !isProcessing && !isRecording
-                  ? isDark ? 'text-brand-purple-light hover:bg-brand-purple/20' : 'text-brand-blue hover:bg-brand-blue/10'
-                  : 'text-slate-400 opacity-50 cursor-not-allowed'
+                  ? 'text-brand-blue hover:bg-brand-blue/10'
+                  : 'text-slate-300 dark:text-slate-600 cursor-not-allowed'
                 }
               `}
             >

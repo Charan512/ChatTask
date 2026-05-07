@@ -37,8 +37,8 @@ export default {
       backgroundImage: {
         // Light Mode hero gradient
         'hero-light': 'linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 50%, #FAF5FF 100%)',
-        // Dark Mode hero gradient
-        'hero-dark':  'linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%)',
+        // Dark Mode hero gradient (Subtle RGBV blend)
+        'hero-dark':  'linear-gradient(135deg, #0F172A 0%, #181124 33%, #0D1C2E 66%, #0F172A 100%)',
         // Purple glow gradient for dark mode accents
         'purple-glow': 'radial-gradient(ellipse at center, rgba(168,85,247,0.35) 0%, transparent 70%)',
         // RGBY gradient for light mode mic button

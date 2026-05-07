@@ -39,11 +39,11 @@ export default function MessageBubble({ sender, transcript, createdAt, isDark })
         <div
           className={`
             px-4 py-2.5 rounded-2xl text-sm leading-relaxed
-            ${isUser
-              ? isDark
-                ? 'bg-brand-purple text-white rounded-br-sm'
-                : 'bg-brand-blue text-white rounded-br-sm'
-              : `glass-card text-slate-800 dark:text-slate-100 rounded-bl-sm`
+            ${
+              isUser
+                ? 'bg-brand-blue text-white rounded-br-sm'
+                : `rounded-bl-sm 
+                  ${isDark ? 'bg-slate-800 text-slate-200 border border-slate-700/50' : 'bg-white border border-slate-100'}`
             }
           `}
         >
