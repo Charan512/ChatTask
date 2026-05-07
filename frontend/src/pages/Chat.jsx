@@ -20,7 +20,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Headphones, PenLine, Loader2, AlertTriangle, Mic, Send } from 'lucide-react';
+import { Headphones, PenLine, Loader2, AlertTriangle, Mic, Send, Volume2 } from 'lucide-react';
 import { getSessionId, resetSessionId } from '../utils/session';
 import { playBase64Audio } from '../utils/audio';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
@@ -55,6 +55,7 @@ export default function Chat() {
   const [showColdStart, setShowColdStart] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [inputText, setInputText] = useState('');
+  const [pendingAudio, setPendingAudio] = useState(null); // { base64, mime } when autoplay blocked
 
   const messagesEndRef = useRef(null);
   const coldStartTimerRef = useRef(null);
@@ -138,9 +139,12 @@ export default function Chat() {
 
       // Auto-play bot's audio response
       try {
+        setPendingAudio(null);
         await playBase64Audio(audio, 'audio/wav');
-      } catch {
-        console.warn('[Chat] Audio playback failed — likely browser autoplay policy.');
+      } catch (playErr) {
+        console.error('[Chat] AudioContext playback failed:', playErr);
+        // Store audio so user can manually trigger playback via a button
+        setPendingAudio({ base64: audio, mime: 'audio/wav' });
       }
     } catch (err) {
       clearTimeout(coldStartTimerRef.current);
@@ -389,6 +393,31 @@ export default function Chat() {
           {/* Scroll anchor */}
           <div ref={messagesEndRef} />
         </div>
+
+        {/* ── Pending audio play button (shown when autoplay is blocked) ── */}
+        {pendingAudio && (
+          <button
+            onClick={async () => {
+              try {
+                await playBase64Audio(pendingAudio.base64, pendingAudio.mime);
+                setPendingAudio(null);
+              } catch (e) {
+                console.error('[Chat] Manual play also failed:', e);
+              }
+            }}
+            className={`
+              mx-4 mb-2 shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium
+              transition-all duration-200 hover:scale-[1.01] active:scale-95
+              ${isDark
+                ? 'bg-brand-purple/20 border border-brand-purple/40 text-brand-purple-light hover:bg-brand-purple/30'
+                : 'bg-brand-blue/10 border border-brand-blue/20 text-brand-blue hover:bg-brand-blue/20'
+              }
+            `}
+          >
+            <Volume2 size={16} />
+            Tap to hear reply
+          </button>
+        )}
 
         {/* ── Input Dock ────────────────────────────────────────────────── */}
         <div className={`
